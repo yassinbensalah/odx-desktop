@@ -194,3 +194,4 @@ Manual MDD parsing:
 python flb.py "C:\Diagnostic\vehicle.mdd"
 flatc --json --raw-binary .\diagnostic_description.fbs -- "C:\Diagnostic\vehicle.bin"
 ```
+Logs: The application log files (uds_transport.log and uds_builder.log) are saved directly in the selected project output folder.
