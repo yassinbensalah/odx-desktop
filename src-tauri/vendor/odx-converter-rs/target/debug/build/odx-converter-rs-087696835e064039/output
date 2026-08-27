@@ -1,0 +1,3 @@
+cargo:rerun-if-changed=proto/file_format.proto
+cargo:rustc-env=ODX_CONVERTER_COMMIT_HASH=unknown
+cargo:rerun-if-changed=.git/HEAD

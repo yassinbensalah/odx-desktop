@@ -1,0 +1,10 @@
+C:\Users\YassinBs\Downloads\ODX-Desktop-1.10.4-Windows-Branch\ODX-Desktop-1.10.4-Windows-Branch\src-tauri\vendor\odx-converter-rs\target\release\deps\autocfg-a9abbf5b5cef0683.d: C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\lib.rs C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\error.rs C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\rustc.rs C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\version.rs
+
+C:\Users\YassinBs\Downloads\ODX-Desktop-1.10.4-Windows-Branch\ODX-Desktop-1.10.4-Windows-Branch\src-tauri\vendor\odx-converter-rs\target\release\deps\libautocfg-a9abbf5b5cef0683.rlib: C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\lib.rs C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\error.rs C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\rustc.rs C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\version.rs
+
+C:\Users\YassinBs\Downloads\ODX-Desktop-1.10.4-Windows-Branch\ODX-Desktop-1.10.4-Windows-Branch\src-tauri\vendor\odx-converter-rs\target\release\deps\libautocfg-a9abbf5b5cef0683.rmeta: C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\lib.rs C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\error.rs C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\rustc.rs C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\version.rs
+
+C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\lib.rs:
+C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\error.rs:
+C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\rustc.rs:
+C:\Users\YassinBs\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\version.rs:

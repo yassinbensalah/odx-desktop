@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ODX Converter</title>
+<link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="app">
+<aside class="rail">
+<div class="rail-brand">
+<span class="dot"></span>
+<span>ODX TOOLS</span>
+</div>
+<button class="rail-btn active" data-tab="workspace" type="button">
+<span class="rail-num">01</span>
+<span>Workspace</span>
+</button>
+<button class="rail-btn" data-tab="convert" type="button">
+<span class="rail-num">02</span>
+<span>Validator &amp; Converter</span>
+</button>
+<button class="rail-btn" data-tab="parse" type="button">
+<span class="rail-num">03</span>
+<span>Parse MDD</span>
+</button>
+<button class="rail-btn" data-tab="uds" type="button">
+<span class="rail-num">04</span>
+<span>Diagnostics</span>
+</button>
+
+<button class="rail-btn" data-tab="sequence" type="button">
+<span class="rail-num">05</span>
+<span>Sequencer</span>
+</button>
+
+
+
+<div class="rail-pipeline">
+<span>PDX</span>
+<span class="arrow">→</span>
+<span>MDD</span>
+<span class="arrow">→</span>
+<span>JSON</span>
+<span class="arrow">→</span>
+<span>UDS</span>
+</div>
+</aside>
+<main class="content">
+<!-- WORKSPACE TAB -->
+<section class="tab active" id="tab-workspace">
+<header>
+<h1>Diagnostic Workspace</h1>
+<p class="sub">Import PDX, ODX and MDD files once. ODX Desktop copies them into its private workspace and restores the list every time the app starts.</p>
+</header>
+<div class="uds-note">
+<strong>Simple rule</strong>
+<span><b>Import</b> stores files permanently. Check the PDX/ODX source(s) you want to work with, then open the Validator &amp; Converter. Generated MDD files are saved in the project output folder you choose and remain available from Diagnostics.</span>
+</div>
+
+<section class="uds-panel workspace-library-panel">
+<div class="uds-panel-title">Saved diagnostic library</div>
+<p class="hint">These files stay saved after closing the app. Check one PDX, or several related ODX files, to enable Validator &amp; Converter.</p>
+<div class="workspace-source-list" id="workspace-source-list">
+<p class="hint">No saved files yet.</p>
+</div>
+<div class="action-row workspace-bottom-actions">
+<button class="btn primary" id="workspace-import-btn" type="button">Import diagnostic files</button>
+<button class="btn" id="workspace-refresh-btn" type="button">Refresh</button>
+<button class="btn primary" id="workspace-convert-btn" type="button" disabled>Validator &amp; Converter</button>
+<button class="btn small" id="workspace-clear-selection-btn" type="button" disabled>Clear checks</button>
+</div>
+<div class="result-status" id="workspace-status"></div>
+</section>
+</section>
+<!-- CONVERT TAB -->
+<section class="tab" id="tab-convert">
+<header>
+<h1>Validator &amp; Converter</h1>
+<p class="sub">Validate a PDX when applicable, then convert it to MDD. You can choose the project output folder used for generated MDD and diagnostic log files.</p>
+</header>
+<section class="uds-panel converter-output-panel">
+<div class="uds-panel-title">Project output folder</div>
+<p class="hint">Generated MDD files, <code>uds_transport.log</code>, and <code>uds_builder.log</code> are saved in this folder. The selection is remembered after restart.</p>
+<div class="project-output-row">
+<p class="path has-file project-output-path" id="project-output-path">Loading output folder…</p>
+<div class="action-row">
+<button class="btn" id="project-output-pick-btn" type="button">Choose output folder</button>
+<button class="btn small" id="project-output-default-btn" type="button">Use Workspace default</button>
+</div>
+</div>
+</section>
+<div class="dropzone" id="convert-drop">
+<div class="dropzone-inner">
+<p class="path" id="convert-file-path">No file selected</p>
+<button class="btn" id="convert-pick-btn" type="button">Choose external .pdx file</button>
+</div>
+</div>
+<div class="action-row">
+<button class="btn" disabled="" id="validate-pdx-btn" type="button">Validate PDX</button>
+<button class="btn primary" disabled="" id="convert-run-btn" type="button">Convert &amp; save MDD</button>
+</div>
+<div class="result" hidden="" id="validate-result">
+<div class="result-status" id="validate-status"></div>
+<pre class="log" id="validate-log"></pre>
+</div>
+<div class="result" hidden="" id="convert-result">
+<div class="result-status" id="convert-status"></div>
+<pre class="log" id="convert-log"></pre>
+<div class="result-actions" hidden="" id="convert-actions">
+<button class="btn primary" id="convert-send-to-parse" type="button">Parse this .mdd →</button>
+</div>
+</div>
+</section>
+<!-- PARSE TAB -->
+<section class="tab" id="tab-parse">
+<header>
+<h1>Parse MDD → JSON</h1>
+<p class="sub">Uses the bundled Rust MDD parser and displays the result as readable JSON.</p>
+</header>
+<div class="dropzone" id="parse-drop">
+<div class="dropzone-inner">
+<p class="path" id="parse-file-path">No file selected</p>
+<button class="btn" id="parse-pick-btn" type="button">Choose .mdd file</button>
+</div>
+</div>
+<button class="btn primary" disabled="" id="parse-run-btn" type="button">Run parser</button>
+<div class="result" hidden="" id="parse-result">
+<div class="result-status" id="parse-status"></div>
+<pre class="log" id="parse-log"></pre>
+<div class="json-panel" hidden="" id="json-panel">
+<div class="json-panel-head">
+<span id="json-source-label">Parsed output</span>
+<button class="btn small" id="save-json-btn" type="button">Save as .json</button>
+</div>
+<pre class="json-view" id="json-view"></pre>
+</div>
+</div>
+</section>
+<!-- UDS BUILDER TAB -->
+<section class="tab uds-tab" id="tab-uds">
+<header>
+<h1>UDS Diagnostics</h1>
+<p class="sub">Load one MDD once, then use the same diagnostic context for Request Builder, Frame Validator, Response Decoder and DTC Decoder.</p>
+</header>
+<div class="uds-note">
+<strong>One shared MDD</strong>
+<span>Choose the MDD once below. All four diagnostic tools immediately use the same loaded MDD; you never reselect it when switching tools.</span>
+</div>
+<section class="uds-source-card">
+<div>
+<span class="uds-kicker">Shared diagnostic MDD</span>
+<p class="path" id="uds-json-path">No MDD loaded</p>
+</div>
+<div class="action-row uds-source-actions">
+<select class="uds-input" id="uds-saved-source-select">
+<option value="">Saved MDD / converted source…</option>
+</select>
+<button class="btn" id="uds-use-saved-source-btn" type="button">Load selected MDD</button>
+<button class="btn" id="uds-pick-json-btn" type="button">Open external .mdd</button>
+</div>
+<div class="result-status" id="uds-source-status"></div>
+</section><nav aria-label="Diagnostic tools" class="diagnostic-tool-switcher">
+<button class="diagnostic-tool-btn active" data-diagnostic-tool="builder" type="button">Request Builder</button>
+<button class="diagnostic-tool-btn" data-diagnostic-tool="validator" type="button">Frame Validator</button>
+<button class="diagnostic-tool-btn" data-diagnostic-tool="response" type="button">Response Decoder</button>
+<button class="diagnostic-tool-btn" data-diagnostic-tool="dtc" type="button">DTC Decoder</button>
+</nav><div class="diagnostic-tool active" id="diagnostic-tool-builder">
+<section class="uds-panel uds-builder-target-card">
+<div class="uds-panel-title">Target ECU &amp; DoIP connection</div>
+<div class="uds-builder-target-grid">
+<label class="uds-label">ECU declared by this diagnostic source
+              <select class="uds-input" disabled="" id="uds-builder-ecu-select">
+<option value="">Choose a diagnostic source first</option>
+</select>
+</label>
+<div class="uds-target-summary">
+<span class="uds-kicker">Rule</span>
+<p class="hint">Only ECUs declared in the active PDX/ODX/MDD workspace source are available. If another ECU is needed, add it to the diagnostic description and import/convert the updated source.</p>
+</div>
+</div>
+<details class="uds-doip-details" id="uds-doip-details" open="">
+<summary>DoIP connection</summary>
+<div class="uds-send-grid uds-doip-inline-grid">
+<label class="uds-label">DoIP server IP / host
+                <input class="uds-input" id="uds-doip-host" placeholder="127.0.0.1" value="127.0.0.1"/>
+</label>
+<label class="uds-label">DoIP port
+                <input class="uds-input" id="uds-doip-port" inputmode="numeric" value="13400"/>
+</label>
+<label class="uds-label">Tester logical address
+                <input class="uds-input" id="uds-doip-source-address" placeholder="0x0E80" value="0x0E80"/>
+</label>
+<label class="uds-label">ECU logical address
+                <input class="uds-input" id="uds-doip-target-address" placeholder="example: 0x00D9"/>
+</label>
+</div>
+<p class="hint">The connection is remembered automatically for the selected ECU. Transport: <strong>doip_rw_tokio 0.1.1</strong>.</p>
+<div class="result-status" id="uds-ecu-connection-status"></div>
+</details>
+</section>
+<div class="uds-layout">
+<section class="uds-panel">
+<div class="uds-panel-title">1. Choose what you want to do</div>
+<label class="uds-label" for="uds-service-select">UDS service</label>
+<select class="uds-select" disabled="" id="uds-service-select">
+<option value="">Load an MDD file first</option>
+</select>
+<div class="uds-step-block" hidden="" id="uds-operation-block">
+<label class="uds-label" for="uds-operation-select">Available operation / identifier</label>
+<select class="uds-select" disabled="" id="uds-operation-select">
+<option value="">Choose a UDS service first</option>
+</select>
+<p class="hint" id="uds-operation-hint">The choices here come from diagnostic services available in the selected MDD.</p>
+</div>
+<div class="uds-service-info">
+<div>
+<span class="uds-kicker">SID</span>
+<code id="uds-service-sid">--</code>
+</div>
+<div>
+<span class="uds-kicker">Positive response</span>
+<code id="uds-positive-sid">--</code>
+</div>
+</div>
+<p class="hint" id="uds-service-description">The builder will show the MDD source layer of the selected service here.</p>
+</section>
+<section class="uds-panel">
+<div class="uds-panel-title">2. Complete only the values required at runtime</div>
+<div id="uds-parameters">
+<p class="hint">Load an MDD file and select a service.</p>
+</div>
+</section>
+</div>
+<section class="uds-request-card">
+<div class="uds-request-head">
+<div>
+<span class="uds-kicker">Generated request</span>
+<div class="uds-request-bytes" id="uds-request-bytes">--</div>
+</div>
+<div class="action-row">
+<button class="btn primary" id="uds-send-request-btn" type="button">Send to selected ECU</button>
+<button class="btn" disabled="" id="uds-add-sequence-btn" type="button">Add to sequence</button>
+<button class="btn" id="uds-reset-btn" type="button">Reset values</button>
+</div>
+</div>
+<div class="result-status" id="uds-write-status"></div>
+<div class="uds-breakdown">
+<div class="uds-panel-title">Byte breakdown</div>
+<div id="uds-byte-breakdown">
+<p class="hint">No service selected.</p>
+</div>
+</div>
+</section>
+<details class="uds-debug">
+<summary>Selected service data (debug)</summary>
+<pre class="log" id="uds-selected-json">No service selected.</pre>
+</details>
+</div><div class="diagnostic-tool" id="diagnostic-tool-validator">
+<header>
+<h1>Frame Validator</h1>
+<p class="sub">Type a UDS request yourself. The app compares it with the diagnostic definitions from the MDD and explains what is valid, missing, or incorrect.</p>
+</header>
+<div class="shared-mdd-tool-context"><span class="uds-kicker">Shared MDD</span><span id="validator-mdd-path">No MDD loaded</span><span class="result-status" id="validator-source-status"></span></div>
+<section class="uds-panel validator-card">
+<label class="uds-label" for="validator-frame-input">UDS request frame</label>
+<input class="uds-input validator-frame-input" id="validator-frame-input" placeholder="Example: 31 01 02 3F 00" type="text">
+<p class="hint">Enter hexadecimal bytes. Spaces are optional.</p>
+<div class="action-row">
+<button class="btn primary" id="validator-run-btn" type="button">Validate frame</button>
+<button class="btn" disabled="" id="validator-add-sequence-btn" type="button">Add valid frame to sequence</button>
+</div>
+</input></section>
+<section class="uds-request-card" hidden="" id="validator-result-card">
+<div class="validator-status" id="validator-status"></div>
+<div id="validator-analysis"></div>
+</section>
+</div><div class="diagnostic-tool" id="diagnostic-tool-response">
+<header>
+<h1>Response Decoder</h1>
+<p class="sub">Paste an ECU response. The app identifies positive or negative responses, the related UDS service, NRC meaning, and response fields available in the MDD.</p>
+</header>
+<div class="shared-mdd-tool-context"><span class="uds-kicker">Shared MDD</span><span id="response-mdd-path">No MDD loaded</span><span class="result-status" id="response-source-status"></span></div>
+<section class="uds-panel validator-card">
+<label class="uds-label" for="response-frame-input">ECU response frame</label>
+<input class="uds-input validator-frame-input" id="response-frame-input" placeholder="Positive: 71 01 02 3F 00   or   Negative: 7F 31 22" type="text">
+<p class="hint">The first byte is interpreted as the positive response SID, or 0x7F for a negative response.</p>
+<div class="action-row">
+<button class="btn primary" id="response-decode-btn" type="button">Decode response</button>
+</div>
+</input></section>
+<section class="uds-request-card" hidden="" id="response-result-card">
+<div class="validator-status" id="response-status"></div>
+<div id="response-analysis"></div>
+</section>
+</div><div class="diagnostic-tool" id="diagnostic-tool-dtc">
+<header>
+<h1>DTC Decoder</h1>
+<p class="sub">Decode UDS ReadDTCInformation (0x19 / positive response 0x59), resolve DTC names and descriptions from the MDD, decode the DTC status byte, and inspect snapshot or extended-data records.</p>
+</header>
+<div class="shared-mdd-tool-context"><span class="uds-kicker">Shared MDD</span><span id="dtc-mdd-path">No MDD loaded</span><span class="result-status" id="dtc-source-status"></span></div>
+<section class="uds-panel validator-card">
+<label class="uds-label" for="dtc-frame-input">ReadDTCInformation positive response</label>
+<input class="uds-input validator-frame-input" id="dtc-frame-input" placeholder="Example: 59 02 FF 12 34 56 AF" type="text">
+<p class="hint">Enter the ECU response beginning with 0x59. For snapshot responses (sub-function 0x04), the decoder shows the DTC, status, record number and raw snapshot payload. Snapshot physical values are decoded only when their structure can be determined from the diagnostic description.</p>
+<div class="action-row">
+<button class="btn primary" id="dtc-decode-btn" type="button">Decode DTC response</button>
+</div>
+</input></section>
+<section class="uds-request-card" hidden="" id="dtc-result-card">
+<div class="validator-status" id="dtc-status"></div>
+<div id="dtc-analysis"></div>
+</section>
+</div></section>
+<!-- FRAME VALIDATOR TAB -->
+
+<!-- SEQUENCER TAB -->
+<section class="tab" id="tab-sequence">
+<header>
+<h1>Diagnostic Sequencer</h1>
+<p class="sub">Create several diagnostic sequences, configure each frame, and export them for later vehicle integration.</p>
+</header>
+<div class="uds-note">
+<strong>Sequence storage</strong>
+<span>Sequences are saved automatically and restored when the application starts. The Builder and Sequencer write through a UDS writer trait. The default implementation writes raw .bin files; another implementation can later write to sockets or another transport.</span>
+</div>
+<section class="uds-panel">
+<div class="uds-panel-title">Sequence manager</div>
+<div class="sequence-manager-grid">
+<label class="uds-label">New sequence
+              <input class="uds-input" id="sequence-name-input" placeholder="Example: Backup and Restore" type="text">
+</input></label>
+<button class="btn primary" id="sequence-create-btn" type="button">Create sequence</button>
+<label class="uds-label">Selected sequence
+              <select class="uds-input" id="sequence-selector"></select>
+</label>
+<button class="btn" id="sequence-delete-btn" type="button">Delete selected sequence</button>
+</div>
+<div class="result-status" id="sequence-manager-status"></div>
+</section>
+<section class="uds-panel">
+<div class="uds-panel-title" id="sequence-current-title">Frames</div>
+<div class="sequence-list" id="sequence-list">
+<p class="hint">Create a sequence, then add requests from UDS Builder or Frame Validator.</p>
+</div>
+<div class="action-row">
+<button class="btn primary" disabled="" id="sequence-send-all-btn" type="button">Send all</button>
+<button class="btn" disabled="" id="sequence-write-btn" type="button">Export selected sequence</button>
+<button class="btn" disabled="" id="sequence-clear-btn" type="button">Clear selected sequence</button>
+</div>
+<p class="hint">Send all uses the ECU and DoIP connection currently selected in Diagnostics. Every step of the run is appended to one persistent <code>uds_transport.log</code> file.</p>
+<div class="result-status" id="sequence-status"></div>
+</section>
+</section>
+<dialog class="sequence-target-dialog" id="sequence-target-dialog">
+<form class="sequence-target-card" method="dialog">
+<h2>Add frame to sequence</h2>
+<p class="sub">Choose the sequence that should receive this frame.</p>
+<label class="uds-label">Target sequence
+            <select class="uds-input" id="sequence-target-select"></select>
+</label>
+<div class="action-row">
+<button class="btn" id="sequence-target-cancel" type="submit" value="cancel">Cancel</button>
+<button class="btn primary" id="sequence-target-confirm" type="button" value="default">Add frame</button>
+</div>
+</form>
+</dialog>
+<!-- RESPONSE DECODER TAB -->
+
+<!-- DTC DECODER TAB -->
+
+<!-- SETTINGS TAB -->
+
+</main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
