@@ -1,0 +1,83 @@
+// file_format.proto – MDD container format (Protocol Buffers 3).
+// Ported from the original eclipse-opensovd/odx-converter project.
+// file_format.proto uses lower_snake_case as is idiomatic in Rust (our main target language).
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.eclipse.opensovd.cda.mdd";
+option java_outer_classname = "FileFormatProto";
+
+package fileformat;
+
+message Encryption {
+    // Algorithm required for the decrypt operation.
+    string encryption_algorithm = 1;
+    // Identifies the key that needs to be used.
+    optional bytes key_identifier = 2;
+    // Certificates that could be required to retrieve the key and decrypt data.
+    repeated bytes certificates = 3;
+}
+
+message Chunk {
+    // Defines the type of chunk data.
+    DataType type = 1;
+    // Name of the chunk (could be a filename).
+    optional string name = 2;
+    // Metadata for this chunk.
+    map<string, string> metadata = 3;
+    // Signatures of the data.
+    repeated Signature signatures = 4;
+    // Algorithm name for any compression applied to data.
+    optional string compression_algorithm = 5;
+    // Uncompressed size – required if a compression algorithm is set.
+    optional uint64 uncompressed_size = 6;
+    optional Encryption encryption = 7;
+    // Mime type of the (uncompressed) content.
+    optional string mime_type = 9;
+    // Chunk data – optional when metadata is the actual payload.
+    optional bytes data = 8;
+
+    enum DataType {
+        // Diagnostic description of the ECU (FlatBuffers-encoded EcuData).
+        DIAGNOSTIC_DESCRIPTION = 0;
+        // A code file associated with the diagnostic description.
+        CODE_FILE = 1;
+        // Partial content extracted from a code file.
+        CODE_FILE_PARTIAL = 2;
+        // Embedded file (e.g. an embedded ODX-F or binary flash-ware).
+        EMBEDDED_FILE = 3;
+        // [4, 1024) are reserved for future extensions.
+        reserved 4 to 1023;
+        // 1024+ may be used by vendors for custom extensions.
+        VENDOR_SPECIFIC = 1024;
+    }
+}
+
+message Signature {
+    // Signature algorithm name (dynamic plug-in handling in the CDA).
+    string algorithm = 1;
+    // Identifies the key used for the signature.
+    optional bytes key_identifier = 2;
+    // Additional metadata.
+    map<string, string> metadata = 3;
+    // Actual signature data.
+    bytes signature = 4;
+    // Optional certificates to establish chain of trust.
+    repeated bytes certificates = 5;
+}
+
+message MDDFile {
+    string version = 1;
+    repeated FeatureFlag feature_flags = 2;
+    string ecu_name = 3;
+    optional string revision = 4;
+    map<string, string> metadata = 5;
+    repeated Chunk chunks = 6;
+    // Sign all chunks together instead of individually.
+    optional Signature chunks_signature = 7;
+
+    enum FeatureFlag {
+        RESERVED = 0; // Not used yet.
+    }
+}

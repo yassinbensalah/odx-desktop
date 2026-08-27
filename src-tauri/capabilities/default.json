@@ -1,0 +1,11 @@
+{
+  "identifier": "default",
+  "description": "Default permissions for the ODX Converter window",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "dialog:default"
+  ]
+}
