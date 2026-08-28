@@ -442,18 +442,6 @@ MIT
 Apache-2.0
 BSD-family licenses
 ```
-
-Commercial use is generally allowed, but the applicable copyright and license notices must be preserved.
-
-The recommended commercial package should contain:
-
-```text
-LICENSES/
-THIRD_PARTY_NOTICES.md
-```
-
-The exact licenses of all direct and transitive dependencies should be checked against the final `Cargo.lock` used for release.
-
 ### `diagnostic_description.fbs`
 
 The FlatBuffers diagnostic schema used by the converter originates from / is related to the Eclipse OpenSOVD ecosystem.
