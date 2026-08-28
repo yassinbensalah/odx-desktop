@@ -448,14 +448,4 @@ The FlatBuffers diagnostic schema used by the converter originates from / is rel
 
 Its existing copyright and Apache-2.0 attribution must be preserved.
 
-
-### ASAM ODX XSD files
-
-Files such as:
-
-```text
-odx_2_2_0.xsd
-odx-xhtml.xsd
-```
-
 ---
