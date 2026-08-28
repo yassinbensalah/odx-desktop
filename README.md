@@ -190,7 +190,7 @@ A Windows `pdx_validator.exe` cannot run natively on Linux.
 Build desktop:
 
 ```bash
-./BUILD.sh
+cargo tauri build
 ```
 
 Build converter only:
